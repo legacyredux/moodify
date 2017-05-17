@@ -90,14 +90,24 @@ app.get('/auth/spotify/callback',
     res.redirect('/');
   });
 
+
 app.get('/recentlyplayed', (req, res) => {
   let url = `https://api.spotify.com/v1/me/player/recently-played`
-  
+
   axios(url, { 'headers': {'Authorization': `Bearer ${accessTime}`} })
     .then((response) => {
         console.log('Received recently played tracks for logged in user');
         console.log('This is playlist tracks request: ', response.data)
         res.send(response.data.items);
+
+app.get('/thisfuckinlist', (req, res) => {
+
+  let url = `https://api.spotify.com/v1/me/player/recently-played`
+
+  axios(url, { 'headers': { 'Authorization': `Bearer ${accesTime}` } })
+    .then((res) => {
+        console.log('First thing that happens!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        console.log('This is playlist tracks request: ', res.data)
       })
     .catch((err) => {
         console.log('error retrieving playlists TRACKS from spotify ', err);
@@ -170,6 +180,7 @@ app.get('/logout', (req, res) => {
           songs: data.body.albums.items,
           dateadded: Date.now()
         };
+
       const newTopTenEntry = new db.TopTenSongs(topTenData);
       newTopTenEntry.save(err => {
         if (err) {console.log('Error saving TopTenSong data')}
@@ -184,6 +195,8 @@ app.get('/logout', (req, res) => {
           res.send(lastTopTenSongData[0].songs)
         })
       }
+     })
+
      }, function(err) {
        console.log("could not get new releases", err);
    });
@@ -197,6 +210,13 @@ app.post('/books', (req,res) => {
   .catch(error => {res.send(error);});
 });
 
+
+
+app.post('/sendlyrics', (req, res) => {
+  console.log('called')
+  console.log(req.body);
+  res.send('hello')
+})
 
 app.post('/search', (req, res) => {
   console.log('fucking aly exceeded the limit!');
@@ -240,10 +260,11 @@ app.post('/processBook', (req, res) => {
     watsonData.agreeableness = data.agreeableness;
     watsonData.emotionalrange = data.emotionalrange
 
-    // const newEntry = new db.Watson(watsonData);
-    //   newEntry.save(err => {
-    //   if (err) { console.log('SAVE WATSON ERROR'); }
-    // }) 
+
+    const newEntry = new db.Watson(watsonData);
+      newEntry.save(err => {
+      if (err) { console.log('SAVE WATSON ERROR'); }
+    })
   })
   .then(() => {
     let bookEntry = new db.Book(input);
@@ -301,7 +322,7 @@ app.post('/process', (req, res) => {
     };
     const newEntry = new db.Watson(watsonData);
     newEntry.save(err => {
-      if (err) { 
+      if (err) {
         console.log('SAVE WATSON ERROR');
         console.log(err); }
     })
@@ -316,8 +337,13 @@ app.post('/process', (req, res) => {
   })
   .then((spotifyData) => {
     input.spotify_uri = spotifyData
-    
+
     let songEntry = new db.Song(input);
+
+
+    console.log('Trying to add a new song!:');
+    console.log(input);
+
     songEntry.save(err => {
       if (err) { console.log("SAVE SONG ERROR: ", err); }
     })
@@ -348,6 +374,7 @@ app.get('/pastSearches', (req, res) => {
   .then(searches => {
     let previousSearches = [];
     return new Promise ((resolve, reject) => {
+<<<<<<< HEAD
       if (searches.length > 0) {
         searches.forEach((ID, index) => {
           if (typeof ID === 'number') {
@@ -357,8 +384,31 @@ app.get('/pastSearches', (req, res) => {
                 track_id: ID,
                 track_name: songData.track_name,
                 artist_name: songData.artist_name
+=======
+      previousSearches = []
+      searches[0].forEach((songId, index) => {
+        db.Song.where({ track_id: songId }).findOne((err, songData) => {
+          if (err) { reject(err); }
+          previousSearches.push({
+            track_id: songId,
+            track_name: songData.track_name,
+            artist_name: songData.artist_name
+          });
+          if (index === searches[0].length - 1) {
+
+            //trying to foreach the songs then books THEN resolve the results of searching whatever blah blah
+            searches[1].forEach((bookId, index) => {
+              db.Book.where({ book_id: bookId }).findOne((err, bookData) => {
+                if (err) { reject(err); }
+                previousSearches.push({
+                  book_id: bookId,
+                  book_name: bookData.book_name,
+                  author_name: bookData.author_name
+                });
+                if (index === searches[1].length - 1) { resolve(previousSearches); }
+>>>>>>> (feat) added routes to get song lyrics
               });
-              if (index === searches.length - 1) { 
+              if (index === searches.length - 1) {
                 resolve(previousSearches);
               }
             });
@@ -370,16 +420,24 @@ app.get('/pastSearches', (req, res) => {
                 book_name: bookData.book_name,
                 author_name: bookData.author_name
               });
-              if (index === searches.length - 1) { 
+              if (index === searches.length - 1) {
                 resolve(previousSearches);
               }
             });
           }
         });
+<<<<<<< HEAD
       } else {
         throw err;
       }
-      
+
+=======
+      });
+
+
+
+    })
+>>>>>>> (feat) added routes to get song lyrics
   })
   .then((previous) => {
     res.send(previous);
@@ -428,7 +486,7 @@ module.exports = app;
   //             track_name: songData.track_name,
   //             artist_name: songData.artist_name
   //           });
-  //           if (index === searches[0].length - 1) { 
+  //           if (index === searches[0].length - 1) {
 
   //             //trying to foreach the songs then books THEN resolve the results of searching whatever blah blah
   //             searches[1].forEach((bookId, index) => {
@@ -461,6 +519,6 @@ module.exports = app;
   //       });
 
   //     }
-    
+
   //   })
   // })
