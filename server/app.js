@@ -263,7 +263,6 @@ app.post('/sendlyrics', (req, res) => {
   // }, 1000, res, req, counter)
   db.WatsonTopTen.find({}).limit(1)
   .exec((err, WatsonTopTen) => {
-    console.log(WatsonTopTen);
     res.send(WatsonTopTen[0])
   })
 
