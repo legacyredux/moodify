@@ -202,7 +202,6 @@ app.get('/logout', (req, res) => {
           res.send(lastTopTenSongData[0].songs)
         })
       }
-     })
 
      }, function(err) {
        console.log("could not get new releases", err);
