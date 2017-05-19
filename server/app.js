@@ -232,7 +232,7 @@ app.post('/sendlyrics', (req, res) => {
   //     if(counter === 19) {
   //       clearInterval(getData)
   //       var allLyrics = [].concat.apply([], lyrics);
-  //       return watsonHelpers.queryWatsonToneHelper(sample)
+  //       return watsonHelpers.queryWatsonToneHelper(allLyrics)
   //         .then(data => {
   //           watsonData = {
   //             track_id: 0,
@@ -250,33 +250,21 @@ app.post('/sendlyrics', (req, res) => {
   //             agreeableness: data.agreeableness,
   //             emotionalrange: data.emotionalrange
   //           };
-  //           res.send(watsonData);
+  //             const newEntry = new db.WatsonTopTen(watsonData);
+  //             newEntry.save(err => {
+  //             if (err) { console.log('SAVE WATSON ERROR');}
+  //             })
+  //             .then(() => {
+  //               console.log('saved watsonTopTen data')
+  //             })
+  //           //res.send(watsonData);
   //         })
   //     }
   // }, 1000, res, req, counter)
-
-
-  var sample = "Spotify Singles -Sting Spotify Singles -Clean BanditSomethin Tells Me -Bryson Tiller Rollin -Calvin Harris Bloom -Machine Gun Kelly Welcome Home -Zac Brown BandMalibu -Miley Cyrus All Becomes Okay -Shallou Mis Planes Son Amarte -JuanesFool's Errand -Fleet Foxes Losing Sleep -Chris Young The System Only Dreams In Total Darkness -The National Missing Link -Nick Murphy Dreamer -Tommy Trash Right Now -HAIM Whatever It Takes -Imagine DragonsDrama -Indiana Massara"
-
-   return watsonHelpers.queryWatsonToneHelper(sample)
-  .then(data => {
-    watsonData = {
-      track_id: 0,
-      anger: data.anger,
-      disgust: data.disgust,
-      fear: data.fear,
-      joy: data.joy,
-      sadness: data.sadness,
-      analytical: data.analytical,
-      confident: data.confident,
-      tentative: data.tentative,
-      openness: data.openness,
-      conscientiousness: data.conscientiousness,
-      extraversion: data.extraversion,
-      agreeableness: data.agreeableness,
-      emotionalrange: data.emotionalrange
-    };
-    res.send(watsonData);
+  db.WatsonTopTen.find({}).limit(1)
+  .exec((err, WatsonTopTen) => {
+    console.log(WatsonTopTen);
+    res.send(WatsonTopTen[0])
   })
 
 })
