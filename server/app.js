@@ -23,11 +23,8 @@ const spotifyHelpers = require('./spotifyHelpers.js');
 const watsonHelpers = require('./watsonHelpers.js');
 const db = require('../database');
 const config = require('../config/index.js');
-<<<<<<< HEAD
 const googleBookHelpers = require('./googleBookHelpers.js')
-=======
 const MM_API_KEY = config.MM_API_KEY;
->>>>>>> (feat) added chained api call and datagrahp to client
 
 
 passport.serializeUser(function(user, done) {
@@ -99,16 +96,6 @@ app.get('/auth/spotify/callback',
 
 
 app.get('/recentlyplayed', (req, res) => {
-  let url = `https://api.spotify.com/v1/me/player/recently-played`
-
-  axios(url, { 'headers': {'Authorization': `Bearer ${accessTime}`} })
-    .then((response) => {
-        console.log('Received recently played tracks for logged in user');
-        console.log('This is playlist tracks request: ', response.data)
-        res.send(response.data.items);
-
-app.get('/thisfuckinlist', (req, res) => {
-
   let url = `https://api.spotify.com/v1/me/player/recently-played`
 
   axios(url, { 'headers': { 'Authorization': `Bearer ${accesTime}` } })
@@ -202,7 +189,6 @@ app.get('/logout', (req, res) => {
           res.send(lastTopTenSongData[0].songs)
         })
       }
-
      }, function(err) {
        console.log("could not get new releases", err);
    });
