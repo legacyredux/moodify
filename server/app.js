@@ -223,6 +223,9 @@ app.post('/sendlyrics', (req, res) => {
 
   let lyrics = [];
   var counter = 0;
+  ////////////////////////////////////////////
+   /// uncomment tomorrow when api works
+  ///////////////////////////////////////////
   // var getData = setInterval(function() {
   //   counter++
   //   console.log(counter)
