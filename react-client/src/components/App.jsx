@@ -44,7 +44,10 @@ class App extends React.Component {
       landingPageComponents: false,
       spotifyHomePage: [],
       showSpotifyPlayer: false,
-      spotifyPlayerUri: ''
+      spotifyPlayerUri: '',
+      watson2: {},
+      allNewReleases: ['New Releases', 'All Tracks']
+
     };
     this.search = this.search.bind(this);
     this.process = this.process.bind(this);
@@ -237,7 +240,9 @@ class App extends React.Component {
     }
     axios.post('/sendlyrics', input)
     .then(res => {
-
+      this.setState({
+        watson2: res.data
+      })
     })
     .catch(err => console.log(err));
   }
@@ -295,7 +300,7 @@ class App extends React.Component {
               {/* add component for top 10 mood here*/}
               {!this.state.showLyrics && !this.state.showResults && !this.showPlayer ?
                 <div className='test'>
-                  show top ten mood component.
+                  <Mood watson={this.state.watson2} songNameAndArtist={this.state.allNewReleases}/>
                 </div>
               : null}
 

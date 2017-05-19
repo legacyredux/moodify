@@ -3,7 +3,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const request = require('request');
+
 const axios = require('axios');
+const qp = require('query-parse');
 
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
@@ -20,7 +23,11 @@ const spotifyHelpers = require('./spotifyHelpers.js');
 const watsonHelpers = require('./watsonHelpers.js');
 const db = require('../database');
 const config = require('../config/index.js');
+<<<<<<< HEAD
 const googleBookHelpers = require('./googleBookHelpers.js')
+=======
+const MM_API_KEY = config.MM_API_KEY;
+>>>>>>> (feat) added chained api call and datagrahp to client
 
 
 passport.serializeUser(function(user, done) {
@@ -211,11 +218,79 @@ app.post('/books', (req,res) => {
 });
 
 
+var rp = require('request-promise')
 
 app.post('/sendlyrics', (req, res) => {
-  console.log('called')
-  console.log(req.body);
-  res.send('hello')
+
+  let lyrics = [];
+  var counter = 0;
+  // var getData = setInterval(function() {
+  //   counter++
+  //   console.log(counter)
+  //   rp('https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?apikey='+ MM_API_KEY + '&callback=callback&format=json&q_artist='+ req.body.data[counter].name + '%20Styles&q_track='+ req.body.data[counter].artists[0].name +'%20Styles')
+  //     .then(response => {
+  //       var data = JSON.parse(response)
+  //       console.log('this is the first', data)
+  //       if(data.message.header.status_code === 200) {
+  //         var a = data.message.body.lyrics.lyrics_body.split().join()
+  //         var b = a.slice(0, a.length - 75)
+  //         lyrics.push(b)
+  //       }
+  //       return rp('https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?apikey='+ MM_API_KEY + '&callback=callback&format=json&q_artist='+ req.body.data[2].name + '%20Styles&q_track='+ req.body.data[2].artists[0].name +'%20Styles')
+  //     })
+  //     .catch((err) => {
+  //        console.log(err)
+  //     })
+  //     if(counter === 19) {
+  //       clearInterval(getData)
+  //       var allLyrics = [].concat.apply([], lyrics);
+  //       return watsonHelpers.queryWatsonToneHelper(sample)
+  //         .then(data => {
+  //           watsonData = {
+  //             track_id: 0,
+  //             anger: data.anger,
+  //             disgust: data.disgust,
+  //             fear: data.fear,
+  //             joy: data.joy,
+  //             sadness: data.sadness,
+  //             analytical: data.analytical,
+  //             confident: data.confident,
+  //             tentative: data.tentative,
+  //             openness: data.openness,
+  //             conscientiousness: data.conscientiousness,
+  //             extraversion: data.extraversion,
+  //             agreeableness: data.agreeableness,
+  //             emotionalrange: data.emotionalrange
+  //           };
+  //           res.send(watsonData);
+  //         })
+  //     }
+  // }, 1000, res, req, counter)
+
+
+  var sample = "Spotify Singles -Sting Spotify Singles -Clean BanditSomethin Tells Me -Bryson Tiller Rollin -Calvin Harris Bloom -Machine Gun Kelly Welcome Home -Zac Brown BandMalibu -Miley Cyrus All Becomes Okay -Shallou Mis Planes Son Amarte -JuanesFool's Errand -Fleet Foxes Losing Sleep -Chris Young The System Only Dreams In Total Darkness -The National Missing Link -Nick Murphy Dreamer -Tommy Trash Right Now -HAIM Whatever It Takes -Imagine DragonsDrama -Indiana Massara"
+
+   return watsonHelpers.queryWatsonToneHelper(sample)
+  .then(data => {
+    watsonData = {
+      track_id: 0,
+      anger: data.anger,
+      disgust: data.disgust,
+      fear: data.fear,
+      joy: data.joy,
+      sadness: data.sadness,
+      analytical: data.analytical,
+      confident: data.confident,
+      tentative: data.tentative,
+      openness: data.openness,
+      conscientiousness: data.conscientiousness,
+      extraversion: data.extraversion,
+      agreeableness: data.agreeableness,
+      emotionalrange: data.emotionalrange
+    };
+    res.send(watsonData);
+  })
+
 })
 
 app.post('/search', (req, res) => {
