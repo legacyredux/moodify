@@ -1,7 +1,7 @@
 // dependencies
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+// const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 
@@ -22,9 +22,6 @@ const db = require('../database');
 const config = require('../config/index.js');
 const googleBookHelpers = require('./googleBookHelpers.js')
 
-const app = express();
-app.use(passport.initialize());
-app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -36,7 +33,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// const app = express();
+const app = express();
 let accessTime;
 
 passport.use(new SpotifyStrategy({
@@ -63,13 +60,13 @@ passport.use(new SpotifyStrategy({
   }
   ));
 //////////////////////////////////////////////////////////////////
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
+// app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -295,7 +292,7 @@ app.post('/process', (req, res) => {
     console.log('********************************************************')
     console.log(req.session.passport);
     console.log('********************************************************')
-    console.log(req.session);
+    console.log(req.session)
     if (req.session.passport.user.username) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {songs: input.track_id}});
     }
