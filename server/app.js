@@ -77,8 +77,9 @@ let options = {host: clientStuff.hostname,
                port: clientStuff.port,
                db: redisAuth[0],
                pass: redisAuth[1]};
-
+app.set('trust proxy', 1);
 app.use(session({secret: "ssshhh",
+                 proxy: true,
                  cookie: {
                   path: '/',
                   httpOnly: false, 
