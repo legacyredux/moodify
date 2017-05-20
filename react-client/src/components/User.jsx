@@ -34,9 +34,8 @@ class User extends React.Component {
     });
   }
 
-
+//this function isn't being used, it can be removed
   recentlyplayed() {
-    console.log('!!!!!!!!!!!User.jsx!!!!!!!!!!!!!!!!!!!!!!!!!')
     axios.get('/recentlyplayed')
       .then((res) => {
         console.log(res);
@@ -56,7 +55,6 @@ class User extends React.Component {
   }
 
   pastSearch() {
-    console.log('getting recent seaches');
     this.setState({loading: true});
     axios.get('/pastSearches').then(res => {
       this.setState({pastSearchResults: res.data, loading: false});

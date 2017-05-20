@@ -18,7 +18,6 @@ import sampleSpotify from '../../../spotify_new_release_sample_data.js';
 
 class App extends React.Component {
   constructor(props) {
-    //console.log(sampleSpotify.albums.items)
     super(props);
     this.state = {
       currentSongNameAndArtist: [],
@@ -147,7 +146,6 @@ class App extends React.Component {
 
       axios.post('/process', input).then(res => {
         let data = res.data;
-        console.log(data);
         this.setState({
           currentSongNameAndArtist: data[0],
           currentLyrics: data[1],
@@ -159,7 +157,6 @@ class App extends React.Component {
           showLyrics: true,
           showMood: true
         });
-        console.log('I am happening is APP.JSX', this.state.showPlayer)
       }).catch(error => {
         throw error;
       });

@@ -76,7 +76,6 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 let sess = {};
 
 
-
 app.get('/auth/spotify',
   passport.authenticate('spotify', {scope: ['user-read-email', 'user-read-recently-played', 'user-top-read'], showDialog: true}),
   (req, res) => {
@@ -86,7 +85,6 @@ app.get('/auth/spotify',
 app.get('/auth/spotify/callback',
   passport.authenticate('spotify', { failureRedirect: '/login' }),
   (req, res) => {
-
     res.redirect('/');
   });
 
@@ -94,7 +92,7 @@ app.get('/recentlyplayed', (req, res) => {
   let url = `https://api.spotify.com/v1/me/player/recently-played`
   
   axios(url, { 'headers': { 'Authorization': `Bearer ${accessTime}` } })
-  .then((res) => {  
+  .then( (res) => {  
 
     let playListEntry = res.data.items;
     let songArray = {track_list: []};
@@ -113,16 +111,14 @@ app.get('/recentlyplayed', (req, res) => {
     })
     return songArray
   })
-  .then(data => {
-    // console.log(data.track_list[0])
+  .then( data => {
     res.send(data)
   })
-  .catch((err) => {
+  .catch( (err) => {
     console.log('error retrieving playlists TRACKS from spotify ', err);
     res.send(err);
-  })
-
-})
+  });
+});
 
 
 
@@ -131,12 +127,10 @@ var spotifyApi = new SpotifyWebApi({clientId: config.SPOTIFY_CLIENT_API_KEY, cli
 spotifyApi.clientCredentialsGrant()
  .then(function(data) {
    console.log('The access token expires in ' + data.body['expires_in']);
-   // Save the access token so that it’s used in future calls
    spotifyApi.setAccessToken(data.body['access_token']);
  }, function(err) {
    console.log('Something went wrong when retrieving an access token', err.message);
  });
-
 
 app.post('/signup', auth.createUser, (req, res) => {
   sess = req.session;
@@ -168,32 +162,29 @@ app.get('/logout', (req, res) => {
 //Query last database entry for date
 //Compare most recent data to today's date
 //if day does not much, query the database
-
-
- app.get('/newreleases', (req,res) => {
-    spotifyApi.getNewReleases({ limit : 20, offset: 0, country: 'US' })
-      .then(data => {
-        topTenData = {
-          songs: data.body.albums.items,
-          dateadded: Date.now()
-        };
-      const newTopTenEntry = new db.TopTenSongs(topTenData);
-      newTopTenEntry.save(err => {
-        if (err) {console.log('Error saving TopTenSong data')}
-          })
-       res.send(data.body.albums.items);
-     });
-
-     }, function(err) {
-       console.log("could not get new releases", err);
+app.get('/newreleases', (req,res) => {
+  spotifyApi.getNewReleases({ limit : 20, offset: 0, country: 'US' })
+    .then(data => {
+      topTenData = {
+        songs: data.body.albums.items,
+        dateadded: Date.now()
+      };
+    const newTopTenEntry = new db.TopTenSongs(topTenData);
+    newTopTenEntry.save(err => {
+      if (err) {console.log('Error saving TopTenSong data')}
+    })
+    res.send(data.body.albums.items);
    });
+  }, function(err) {
+    console.log("could not get new releases", err);
+});
 
 app.post('/books', (req,res) => {
   return googleBookHelpers.getBookDescriptionByTitleAndAuthor(req.body.title, req.body.artist)
   .then(data => {
-    if (data.length === 0) {res.send({errorMessage: 'No Search Results'}); }
+    if (data.length === 0) { res.send({errorMessage: 'No Search Results'}); }
     res.send(data);
-  })
+    })
   .catch(error => {res.send(error);});
 });
 
@@ -239,38 +230,34 @@ app.post('/processBook', (req, res) => {
     watsonData.extraversion = data.extraversion;
     watsonData.agreeableness = data.agreeableness;
     watsonData.emotionalrange = data.emotionalrange
-
     //this can be readded at some point
     // const newEntry = new db.Watson(watsonData);
     //   newEntry.save(err => {
     //   if (err) { console.log('SAVE WATSON ERROR'); }
     // }) 
   })
-  .then(() => {
+  .then( () => {
     let bookEntry = new db.Book(input);
     bookEntry.save(err => {
       if (err) { console.log("SAVE BOOK ERROR: ", err); }
     })
   })
-  .then(() => {
+  .then( () => {
     if (req.session.passport) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {books: input.book_id}});
     }
   })
-  .then(() => {
+  .then( () => {
     res.json([bookTitleAndAuthor, input.description, watsonData, input.img]);
   })
-  .catch((err) => {
+  .catch( (err) => {
     console.log('Error processbook: ', err);
   })
 })
 
 app.post('/process', (req, res) => {
   let input = req.body;
-
-  const songNameAndArtist = [input.artist_name, input.track_name];
-
-  console.log(songNameAndArtist);
+  let songNameAndArtist = [input.artist_name, input.track_name];
   let watsonData = {};
 
   return mmHelpers.getLyricsByTrackId(input.track_id)
@@ -280,8 +267,7 @@ app.post('/process', (req, res) => {
     input.lyrics = lyrics.slice(0, (lyrics.indexOf('*******')));
     return;
   })
-  .then(() => {
-    //NEEDS TO BE DATA FROM LYRIC API CALL
+  .then( () => {
     // input.lyrics = 'I hate!\nI hate!\nI hate!\nI hate!\n'
     return watsonHelpers.queryWatsonToneHelper(input.lyrics)
   })
@@ -307,15 +293,15 @@ app.post('/process', (req, res) => {
       if (err) { console.log('SAVE WATSON ERROR'); }
     })
   })
-  .then(() => {
+  .then( () => {
     if (req.session.passport.user.username) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {songs: input.track_id}});
     }
   })
-  .then(() => {
+  .then( () => {
     return spotifyHelpers.getSongByTitleAndArtist(input.track_name, input.artist_name)
   })
-  .then((spotifyData) => {
+  .then( (spotifyData) => {
     input.spotify_uri = spotifyData
     
     let songEntry = new db.Song(input);
@@ -323,10 +309,10 @@ app.post('/process', (req, res) => {
       if (err) { console.log("SAVE SONG ERROR: ", err); }
     })
   })
-  .then(() => {
+  .then( () => {
     res.json([songNameAndArtist, input.lyrics, watsonData, input.spotify_uri]);
   })
-  .catch((error) => {
+  .catch( (error) => {
     console.log('/PROCESS ERROR: ', error);
     res.send(error);
   });
@@ -335,81 +321,78 @@ app.post('/process', (req, res) => {
 
 app.get('/pastSearches', (req, res) => {
   /***************************************************************************************/
-  /***************************************************************************************/
   const username = req.session.user || req.session.passport.user.username;
   return new Promise ( (resolve, reject) => {
     db.User.where({ username: username }).findOne((err, user) => {
-      if (err) { reject(err); }//
+      if (err) { reject(err); }
       let songs = user !== null ? user.songs : [];
       let books = user !== null ? user.books : [];
       resolve(songs.concat(books));
-    })//
-  })//
+    })
+  })
   
-
   .then( (searches) => {
     let previousSearches = [];
-    
+      return new Promise ((resolve, reject) => {
+        if (searches.length > 0) {
+          searches.forEach((ID, index) => {
+            if (typeof ID === 'number') {
+              db.Song.where({ track_id: ID }).findOne( (err, songData) => {
+                if (err) { reject(err); }
+                previousSearches.push({
+                  track_id: ID,
+                  track_name: songData.track_name,
+                  artist_name: songData.artist_name
+                });
+                if (index === searches.length - 1) { 
+                  resolve(previousSearches);
+                }
+              });
+            } else {
+              db.Book.where({ book_id: ID }).findOne( (err, bookData) => {
+                if (err) { reject(err); }
+                previousSearches.push({
+                  book_id: ID,
+                  book_name: bookData.book_name,
+                  author_name: bookData.author_name
+                });
+                if (index === searches.length - 1) {
+                  resolve(previousSearches);
+                }
+              });
+            }
+          });
+        } else {
+          throw err;
+        }
+    })
 
-            return new Promise ((resolve, reject) => {
-              if (searches.length > 0) {//
-                searches.forEach((ID, index) => {//
-                  if (typeof ID === 'number') {//
-                    db.Song.where({ track_id: ID }).findOne( (err, songData) => {//
-                      if (err) { reject(err); }//
-                      previousSearches.push({//
-                        track_id: ID,
-                        track_name: songData.track_name,
-                        artist_name: songData.artist_name
-                      });//
-                      if (index === searches.length - 1) { //
-                        resolve(previousSearches);
-                      }//
-                    });//
-                  } else {//
-                    db.Book.where({ book_id: ID }).findOne( (err, bookData) => {//
-                      if (err) { reject(err); }//
-                      previousSearches.push({//
-                        book_id: ID,
-                        book_name: bookData.book_name,
-                        author_name: bookData.author_name
-                      });//
-                      if (index === searches.length - 1) {//
-                        resolve(previousSearches);
-                      }//
-                    });//
-                  }//
-                });//
-              } else {//
-                throw err;
-              }//
-          })//
-
-          .then( (previous) => {//
-            res.send(previous);
-          })//
-          .catch( (err) => {//
-            res.send({errorMessage: 'No Past Searches'});
-          })//
-
-})
-
-})
+    .then( (previous) => {
+      res.send(previous);
+    })
+    .catch( (err) => {
+      res.send({errorMessage: 'No Past Searches'});
+    });
+  })
+  .catch( (err) => {
+    res.send( {errorMessage: 'No Past Searches'} );
+  })
+});
 
 app.post('/loadPastSearchResults', (req, res) => {
-  return new Promise((resolve, reject) => {
+  return new Promise( (resolve, reject) => {
     db.Song
     .find({ track_id: req.body.track_id })
-    .exec((err, data) => {
+    .exec( (err, data) => {
       resolve(data[0]);
     })
   })
-  .then((songData) => {
+  .then( (songData) => {
     let output = [];
     output.push(songData);
     db.Watson
     .find({ track_id: req.body.track_id })
-    .exec((err, watsonData) => {
+    .exec( (err, watsonData) => {
       output.push(watsonData[0]);
       res.send(output);
     })
