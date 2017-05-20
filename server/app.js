@@ -34,9 +34,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 const app = express();
-
 let accessTime;
-
 
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
@@ -51,9 +49,8 @@ passport.use(new SpotifyStrategy({
       username: profile.username,
       password: profile.id,
     }, (err, result) => {
-      if (!err) {   
+      if (!err) {
         console.log('yay!: ', result);
-
       } else {
         console.log('no :( : ', err);
       }
@@ -94,7 +91,6 @@ app.get('/auth/spotify/callback',
   });
 
 app.get('/recentlyplayed', (req, res) => {
-  
   let url = `https://api.spotify.com/v1/me/player/recently-played`
   
   axios(url, { 'headers': { 'Authorization': `Bearer ${accesTime}` } })
@@ -222,7 +218,6 @@ app.post('/fetchLyricsByTrackId', (req, res) => {
 });
 
 app.post('/processBook', (req, res) => {
-  console.log(req.body);
   let input = req.body;
 
   const bookTitleAndAuthor = [input.author_name, input.book_name];
@@ -230,36 +225,39 @@ app.post('/processBook', (req, res) => {
 
   return watsonHelpers.queryWatsonToneHelper(input.description)
   .then(data => {
-    console.log('received response from watson');
-    console.log(data.fear);
-    watsonData.book_id = input.id,
-    watsonData.anger = data.anger,
-    watsonData.disgust = data.disgust,
-    watsonData.fear = data.fear,
-    watsonData.joy = data.joy,
-    watsonData.sadness = data.sadness,
-    watsonData.analytical = data.analytical,
-    watsonData.confident = data.confident,
-    watsonData.tentative = data.tentative,
-    watsonData.openness = data.openness,
-    watsonData.conscientiousness = data.conscientiousness,
-    watsonData.extraversion = data.extraversion,
-    watsonData.agreeableness = data.agreeableness,
+    watsonData.book_id = input.book_id;
+    watsonData.anger = data.anger;
+    watsonData.disgust = data.disgust;
+    watsonData.fear = data.fear;
+    watsonData.joy = data.joy;
+    watsonData.sadness = data.sadness;
+    watsonData.analytical = data.analytical;
+    watsonData.confident = data.confident;
+    watsonData.tentative = data.tentative;
+    watsonData.openness = data.openness;
+    watsonData.conscientiousness = data.conscientiousness;
+    watsonData.extraversion = data.extraversion;
+    watsonData.agreeableness = data.agreeableness;
     watsonData.emotionalrange = data.emotionalrange
 
+    //this can be readded at some point
     // const newEntry = new db.Watson(watsonData);
     //   newEntry.save(err => {
     //   if (err) { console.log('SAVE WATSON ERROR'); }
     // }) 
   })
   .then(() => {
-    console.log('saved watson info to db');
+    let bookEntry = new db.Book(input);
+    bookEntry.save(err => {
+      if (err) { console.log("SAVE BOOK ERROR: ", err); }
+    })
+  })
+  .then(() => {
     if (req.session.passport) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {books: input.book_id}});
     }
   })
   .then(() => {
-    console.log('sending response to client');
     res.json([bookTitleAndAuthor, input.description, watsonData, input.img]);
   })
   .catch((err) => {
@@ -284,7 +282,7 @@ app.post('/process', (req, res) => {
   })
   .then(() => {
     //NEEDS TO BE DATA FROM LYRIC API CALL
-    //input.lyrics = 'I hate!\nI hate!\nI hate!\nI hate!\n'
+    // input.lyrics = 'I hate!\nI hate!\nI hate!\nI hate!\n'
     return watsonHelpers.queryWatsonToneHelper(input.lyrics)
   })
   .then(data => {
