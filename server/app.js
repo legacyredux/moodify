@@ -23,7 +23,7 @@ const watsonHelpers = require('./watsonHelpers.js');
 const db = require('../database');
 const config = require('../config/index.js');
 const googleBookHelpers = require('./googleBookHelpers.js')
-
+let accessTime;
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -36,7 +36,32 @@ passport.deserializeUser(function(id, done) {
 });
 
 const app = express();
-let accessTime;
+
+
+//////////////////////////////////////////////////////////////////
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+
+let clientStuff = url.parse(process.env.REDISTOGO_URL);
+let redisAuth = clientStuff.auth.split(':');
+
+let options = {host: clientStuff.hostname,
+               port: clientStuff.port,
+               db: redisAuth[0],
+               pass: redisAuth[1]};
+app.set('trust proxy', 1);
+app.use(session({secret: "ssshhh",
+                 proxy: true,
+                 saveUninitialized: true,
+                 resave: true,
+                 store: new RedisStore(options)/*client redis module?*/
+}));
+
 
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
@@ -61,29 +86,26 @@ passport.use(new SpotifyStrategy({
     done(null, profile);
   }
   ));
-//////////////////////////////////////////////////////////////////
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(cors());
-app.use(bodyParser.json());
-app.use(cookieParser());
 
 
-let clientStuff = url.parse(process.env.REDISTOGO_URL);
-let redisAuth = clientStuff.auth.split(':');
 
-let options = {host: clientStuff.hostname,
-               port: clientStuff.port,
-               db: redisAuth[0],
-               pass: redisAuth[1]};
-app.set('trust proxy', 1);
-app.use(session({secret: "ssshhh",
-                 proxy: true,
-                 saveUninitialized: true,
-                 resave: true,
-                 store: new RedisStore(options)/*client redis module?*/
-}));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
