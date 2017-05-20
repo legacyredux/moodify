@@ -28,15 +28,16 @@ let accessTime;
 
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+app.use(cookieParser());
 
+app.set('trust proxy', 1);
 
 //////////////////////////////////////////////////////////////////
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(cookieParser());
 
 
 let clientStuff = url.parse(process.env.REDISTOGO_URL);
@@ -46,7 +47,7 @@ let options = {host: clientStuff.hostname,
                port: clientStuff.port,
                db: redisAuth[0],
                pass: redisAuth[1]};
-app.set('trust proxy', 1);
+
 app.use(session({secret: "ssshhh",
                  proxy: true,
                  saveUninitialized: true,
