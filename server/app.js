@@ -79,7 +79,7 @@ let options = {host: clientStuff.hostname,
                pass: redisAuth[1]};
 
 app.use(session({secret: "ssshhh", 
-                 resave: false, 
+                 resave: true, 
                  saveUninitialized: true,
                  store: new RedisStore(options)/*client redis module?*/
 }));
