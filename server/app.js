@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const url = require('url');
 const RedisStore = require('connect-redis')(session);
 
 const passport = require('passport');
@@ -68,10 +69,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-let options = {
-  client: config.redisUrl,
-  logErrors: true
-};
+
+let clientStuff = url.parse(process.env.REDISTOGO_URL);
+
+let options = {host: clientStuff.hostname,
+               port: clientStuff.port,
+               db: redisAuth[0],
+               pass: redisAuth[1]};
 
 app.use(session({secret: "ssshhh", 
                  resave: false, 
