@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
+const RedisStore = require('connect-redis')(session);
 
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
@@ -66,7 +67,18 @@ app.use(passport.session());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
+
+let options = {
+  client: config.redisUrl,
+  logErrors: true
+};
+
+app.use(session({secret: "ssshhh", 
+                 resave: false, 
+                 saveUninitialized: true,
+                 store: new RedisStore(options),/*client redis module?*/
+}));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -85,7 +97,7 @@ app.get('/auth/spotify',
 app.get('/auth/spotify/callback',
   passport.authenticate('spotify', { failureRedirect: 'https://lahumeur.herokuapp.com/login' }),
   (req, res) => {
-    res.redirect('https://lahumeur.herokuapp.com/');
+    res.redirect(config.REDIRECT);
   });
 
 app.get('/recentlyplayed', (req, res) => {

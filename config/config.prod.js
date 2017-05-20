@@ -11,6 +11,8 @@ module.exports = {
   DATABASE_URL: process.env.MONGODB_URI,
   SPOTIFY_CLIENT_API_KEY: process.env.SPOTIFY_CLIENT_API_KEY,
   SPOTIFY_CLIENT_SECRET_API_KEY: process.env.SPOTIFY_CLIENT_SECRET_API_KEY,
+  REDIRECT: process.env.REDIRECT,
+  redisUrl: process.env.REDISTOGO_URL,
 
   SPOTIFY: {
     clientId: process.env.SPOTIFY_CLIENT_ID,
