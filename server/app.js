@@ -48,11 +48,16 @@ let options = {host: clientStuff.hostname,
                db: redisAuth[0],
                pass: redisAuth[1]};
 
-app.use(session({secret: "ssshhh",
-                 proxy: true,
-                 saveUninitialized: true,
-                 resave: true,
-                 store: new RedisStore(options)/*client redis module?*/
+// app.use(session({secret: "ssshhh",
+//                  proxy: true,
+//                  saveUninitialized: true,
+//                  resave: true,
+//                  store: new RedisStore(options)/*client redis module?*/
+// }));
+app.use(cookieSession({
+  secret: 'ssshhh',
+  signed: true,
+  store: new RedisStore(options)
 }));
 
 passport.serializeUser(function(user, done) {
