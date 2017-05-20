@@ -74,7 +74,7 @@ class User extends React.Component {
         <div className="user">
           {renderif(!this.state.loggedIn)(
             <div>
-              <a href="http://localhost:8080/auth/spotify" className="loginButton">
+              <a href="https://lahumeur.herokuapp.com/auth/spotify" className="loginButton">
               Connect With Spotify
               </a>
             </div>
