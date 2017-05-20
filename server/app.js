@@ -1,7 +1,7 @@
 // dependencies
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
+const session = require('cookie-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const url = require('url');
@@ -31,12 +31,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 app.set('trust proxy', 1);
 
 //////////////////////////////////////////////////////////////////
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 
 
