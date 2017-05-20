@@ -26,6 +26,7 @@
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "chart.js": "^2.5.0",
+    "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.3",
     "css-loader": "^0.28.1",
@@ -52,6 +53,7 @@
     "request-promise": "^4.2.0",
     "spotify-web-api-node": "^2.4.0",
     "style-loader": "^0.17.0",
+    "url": "^0.11.0",
     "watson-developer-cloud": "^2.31.1",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.5"
