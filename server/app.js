@@ -83,7 +83,7 @@ app.get('/auth/spotify',
   });
 
 app.get('/auth/spotify/callback',
-  passport.authenticate('spotify', { failureRedirect: '/login' }),
+  passport.authenticate('spotify', { failureRedirect: 'https://lahumeur.herokuapp.com/login' }),
   (req, res) => {
     res.redirect('https://lahumeur.herokuapp.com/');
   });
@@ -289,6 +289,10 @@ app.post('/process', (req, res) => {
     })
   })
   .then( () => {
+    console.log('********************************************************')
+    console.log(req.session.passport);
+    console.log('********************************************************')
+    console.log(req.session);
     if (req.session.passport.user.username) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {songs: input.track_id}});
     }
