@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const beautifyUnique = require('mongoose-beautiful-unique-validation');
+const config = require('../config/index.js');
 const DATABASE_URL = config.DATABASE_URL;
 mongoose.Promise = require('bluebird');
 mongoose.createConnection(DATABASE_URL);//'mongodb://localhost/test'
-const config = require('../config/index.js');
 const findOrCreate = require('mongoose-find-or-create');
 
 mongoose.connect(DATABASE_URL);
