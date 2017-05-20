@@ -4,17 +4,11 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const url = require('url');
-const RedisStore = require('connect-redis')(session);
-const cookieSesh = require('cookie-session');
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const SpotifyWebApi = require('spotify-web-api-node');
-
-
 const cors = require('cors');
 const Promise = require('bluebird');
-
 // other module exports
 const auth = require('./auth.js');
 const mmHelpers = require('./musixMatchHelpers.js');
@@ -23,57 +17,23 @@ const watsonHelpers = require('./watsonHelpers.js');
 const db = require('../database');
 const config = require('../config/index.js');
 const googleBookHelpers = require('./googleBookHelpers.js')
-let accessTime;
-
-
-
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(cookieParser());
-
-app.set('trust proxy', 1);
-
-//////////////////////////////////////////////////////////////////
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-
-let clientStuff = url.parse(process.env.REDISTOGO_URL);
-let redisAuth = clientStuff.auth.split(':');
-
-let options = {host: clientStuff.hostname,
-               port: clientStuff.port,
-               db: redisAuth[0],
-               pass: redisAuth[1]};
-
-app.use(session({secret: "ssshhh",
-                 proxy: true,
-                 saveUninitialized: true,
-                 resave: true,
-                 store: new RedisStore(options)/*client redis module?*/
-}));
-
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
-
 passport.deserializeUser(function(id, done) {
   User.findById(id, function(err, user) {
     done(err, user);
   });
 });
-
+const app = express();
+let accessTime;
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
   clientSecret: config.SPOTIFY.secret,
   callbackURL: config.SPOTIFY.cbURL
   },
   function(accessToken, refreshToken, profile, done) {
-
     accessTime = accessToken;
-
     db.User.findOrCreate({
       username: profile.username,
       password: profile.id,
@@ -84,36 +44,18 @@ passport.use(new SpotifyStrategy({
         console.log('no :( : ', err);
       }
     })
-
     done(null, profile);
   }
   ));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////////////////
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cors());
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
 app.use(bodyParser.urlencoded({ extended: true }));
-
-
 app.use(express.static(__dirname + '/../react-client/dist'));
-
 // routes
 let sess = {};
 
