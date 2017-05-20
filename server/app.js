@@ -190,7 +190,6 @@ app.post('/books', (req,res) => {
 
 
 app.post('/search', (req, res) => {
-  console.log('fucking aly exceeded the limit!');
   return mmHelpers.searchByTitleAndArtist(req.body.title, req.body.artist)
   .then(data => {
     if (data.track_list.length === 0) { res.send({errorMessage: 'No Search Results'}); }
