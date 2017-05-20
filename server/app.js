@@ -54,7 +54,7 @@ let options = {host: clientStuff.hostname,
 //                  resave: true,
 //                  store: new RedisStore(options)/*client redis module?*/
 // }));
-app.use(cookieSession({
+app.use(session({
   secret: 'ssshhh',
   signed: true,
   store: new RedisStore(options)
