@@ -29,7 +29,6 @@ class LoginSignup extends React.Component {
     .then((res) => {
       if (!res.data.errorMessage) {
         this.setState ({redirect: true});
-        console.log('Login successful!');
       } else if (res.data.errorMessage) {
         this.setState({userError: res.data.errorMessage});
       }
@@ -42,7 +41,6 @@ class LoginSignup extends React.Component {
     .then((res) => {
       if (!res.data.errorMessage) {
         this.setState ({redirect: true});
-        console.log('Welcome!');
       } else if (res.data.errorMessage) {
         this.setState({signError: res.data.errorMessage});
       }

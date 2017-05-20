@@ -94,8 +94,6 @@ class App extends React.Component {
       //this is working right now, but can't test song search to make sure so I'm leaving 
       //the commented code above available. If this doesn't work, friday morning, ask john
       let results = res.data.items ? res.data.items : res.data;
-      console.log('from search: ')
-      console.log(res.data);
       this.setState({
         searchResults: results,
         searchResultsLoading: false
@@ -106,9 +104,6 @@ class App extends React.Component {
 
 
   process(trackObj) {
-
-    console.log(trackObj);
-
     if (trackObj.volumeInfo) {
       let input = {
         book_id: trackObj.id,
@@ -120,7 +115,6 @@ class App extends React.Component {
 
       axios.post('/processBook', input).then(res => {
         let data = res.data;
-        console.log(res.data);
         this.setState({
           currentSongNameAndArtist: data[0],
           currentLyrics: data[1],
@@ -248,7 +242,6 @@ class App extends React.Component {
       return res.data.track_list[0];
     })
     .then(data =>  {
-      console.log(data.track)
       this.process(data.track);
     });
     
@@ -270,8 +263,6 @@ class App extends React.Component {
   }
 
   recentlyPlayedSongs(songArtist) {
-    console.log("I am getting to recentlyplayed", songArtist)
-
     this.setState({searchResultsLoading: true, showPrev: true, upDown: false});
 
     let options = {
@@ -288,7 +279,6 @@ class App extends React.Component {
       return res.data.track_list[0];
     })
     .then(data =>  {
-      console.log(data.track)
       this.process(data.track);
     });
     
@@ -305,7 +295,6 @@ class App extends React.Component {
           recentlyPlayed: true,
           showResults: true
         })
-        console.log(this.state.searchResults);
       })
       .catch( (err) => {
         console.log(err);

@@ -229,11 +229,7 @@ app.post('/processBook', (req, res) => {
     watsonData.extraversion = data.extraversion;
     watsonData.agreeableness = data.agreeableness;
     watsonData.emotionalrange = data.emotionalrange
-    //this can be readded at some point
-    // const newEntry = new db.Watson(watsonData);
-    //   newEntry.save(err => {
-    //   if (err) { console.log('SAVE WATSON ERROR'); }
-    // }) 
+
   })
   .then( () => {
     let bookEntry = new db.Book(input);

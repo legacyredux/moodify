@@ -12,7 +12,6 @@ class Header extends React.Component {
   }
 
   redirect() {
-    console.log('trying to redirect');
     this.setState({redirect: true});
   }
 
