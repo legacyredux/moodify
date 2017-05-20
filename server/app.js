@@ -80,10 +80,7 @@ let options = {host: clientStuff.hostname,
 app.set('trust proxy', 1);
 app.use(session({secret: "ssshhh",
                  proxy: true,
-                 cookie: {
-                  path: '/',
-                  httpOnly: false, 
-                 },
+                 saveUninitialized: true,
                  resave: true,
                  store: new RedisStore(options)/*client redis module?*/
 }));
