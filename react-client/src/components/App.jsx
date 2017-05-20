@@ -258,11 +258,6 @@ class App extends React.Component {
                     showPrev={this.state.showPrev}
                     upDown={this.state.upDown}
                     runUpDown={this.upDown}/>
-                    bookSearch={this.bookSearch}
-                    prev={this.showResults}
-                    showPrev={this.state.showPrev}
-                    upDown={this.state.upDown}
-                    runUpDown={this.upDown}/>
               {this.state.showResults ?
               <SearchResults results={this.state.searchResults}
                              process={this.process}
@@ -302,14 +297,7 @@ class App extends React.Component {
               : null}
 
               {/* add component for top 10 mood here*/}
-              {this.state.watson2 === null ?
-                <div>
-                  <h5>Getting Mood for all New Releases</h5>
-                  <div className="loading">
-                    <img alt="loading" src="./img/triangle.svg"/>
-                  </div>
-                </div>
-                 : null }
+
               {!this.state.showLyrics && !this.state.showResults && !this.showPlayer && this.state.watson2 !== null ?
                 <div className='test'>
                   <Mood watson={this.state.watson2} songNameAndArtist={this.state.allNewReleases}/>
