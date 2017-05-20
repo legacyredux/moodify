@@ -93,7 +93,7 @@ app.get('/auth/spotify/callback',
 app.get('/recentlyplayed', (req, res) => {
   let url = `https://api.spotify.com/v1/me/player/recently-played`
   
-  axios(url, { 'headers': { 'Authorization': `Bearer ${accesTime}` } })
+  axios(url, { 'headers': { 'Authorization': `Bearer ${accessTime}` } })
   .then((res) => {  
 
     let playListEntry = res.data.items;
@@ -332,61 +332,69 @@ app.post('/process', (req, res) => {
   });
 })
 
+
 app.get('/pastSearches', (req, res) => {
   /***************************************************************************************/
   /***************************************************************************************/
   const username = req.session.user || req.session.passport.user.username;
-  return new Promise ((resolve, reject) => {
+  return new Promise ( (resolve, reject) => {
     db.User.where({ username: username }).findOne((err, user) => {
-      if (err) { reject(err); }
+      if (err) { reject(err); }//
       let songs = user !== null ? user.songs : [];
       let books = user !== null ? user.books : [];
       resolve(songs.concat(books));
-    })
-  })
-  .then(searches => {
+    })//
+  })//
+  
+
+  .then( (searches) => {
     let previousSearches = [];
-    return new Promise ((resolve, reject) => {
-      if (searches.length > 0) {
-        searches.forEach((ID, index) => {
-          if (typeof ID === 'number') {
-            db.Song.where({ track_id: ID }).findOne((err, songData) => {
-              if (err) { reject(err); }
-              previousSearches.push({
-                track_id: ID,
-                track_name: songData.track_name,
-                artist_name: songData.artist_name
-              });
-              if (index === searches.length - 1) { 
-                resolve(previousSearches);
-              }
-            });
-          } else {
-            db.Book.where({ book_id: ID }).findOne((err, bookData) => {
-              if (err) { reject(err); }
-              previousSearches.push({
-                book_id: ID,
-                book_name: bookData.book_name,
-                author_name: bookData.author_name
-              });
-              if (index === searches.length - 1) { 
-                resolve(previousSearches);
-              }
-            });
-          }
-        });
-      } else {
-        throw err;
-      }
-      
-  })
-  .then((previous) => {
-    res.send(previous);
-  })
-  .catch(err => {
-    res.send({errorMessage: 'No Past Searches'});
-  })
-});
+    
+
+            return new Promise ((resolve, reject) => {
+              if (searches.length > 0) {//
+                searches.forEach((ID, index) => {//
+                  if (typeof ID === 'number') {//
+                    db.Song.where({ track_id: ID }).findOne( (err, songData) => {//
+                      if (err) { reject(err); }//
+                      previousSearches.push({//
+                        track_id: ID,
+                        track_name: songData.track_name,
+                        artist_name: songData.artist_name
+                      });//
+                      if (index === searches.length - 1) { //
+                        resolve(previousSearches);
+                      }//
+                    });//
+                  } else {//
+                    db.Book.where({ book_id: ID }).findOne( (err, bookData) => {//
+                      if (err) { reject(err); }//
+                      previousSearches.push({//
+                        book_id: ID,
+                        book_name: bookData.book_name,
+                        author_name: bookData.author_name
+                      });//
+                      if (index === searches.length - 1) {//
+                        resolve(previousSearches);
+                      }//
+                    });//
+                  }//
+                });//
+              } else {//
+                throw err;
+              }//
+          })//
+
+          .then( (previous) => {//
+            res.send(previous);
+          })//
+          .catch( (err) => {//
+            res.send({errorMessage: 'No Past Searches'});
+          })//
+
+})
+
+})
 
 app.post('/loadPastSearchResults', (req, res) => {
   return new Promise((resolve, reject) => {
