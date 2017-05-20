@@ -269,7 +269,6 @@ app.post('/sendlyrics', (req, res) => {
 })
 
 app.post('/search', (req, res) => {
-  console.log('fucking aly exceeded the limit!');
   return mmHelpers.searchByTitleAndArtist(req.body.title, req.body.artist)
   .then(data => {
     if (data.track_list.length === 0) { res.send({errorMessage: 'No Search Results'}); }
@@ -311,10 +310,10 @@ app.post('/processBook', (req, res) => {
     watsonData.emotionalrange = data.emotionalrange
 
 
-    const newEntry = new db.Watson(watsonData);
-      newEntry.save(err => {
-      if (err) { console.log('SAVE WATSON ERROR'); }
-    })
+  //   const newEntry = new db.Watson(watsonData);
+  //     newEntry.save(err => {
+  //     if (err) { console.log('SAVE WATSON ERROR'); }
+  //   })
   })
   .then(() => {
     let bookEntry = new db.Book(input);
@@ -424,7 +423,6 @@ app.get('/pastSearches', (req, res) => {
   .then(searches => {
     let previousSearches = [];
     return new Promise ((resolve, reject) => {
-<<<<<<< HEAD
       if (searches.length > 0) {
         searches.forEach((ID, index) => {
           if (typeof ID === 'number') {
@@ -434,30 +432,7 @@ app.get('/pastSearches', (req, res) => {
                 track_id: ID,
                 track_name: songData.track_name,
                 artist_name: songData.artist_name
-=======
-      previousSearches = []
-      searches[0].forEach((songId, index) => {
-        db.Song.where({ track_id: songId }).findOne((err, songData) => {
-          if (err) { reject(err); }
-          previousSearches.push({
-            track_id: songId,
-            track_name: songData.track_name,
-            artist_name: songData.artist_name
-          });
-          if (index === searches[0].length - 1) {
-
-            //trying to foreach the songs then books THEN resolve the results of searching whatever blah blah
-            searches[1].forEach((bookId, index) => {
-              db.Book.where({ book_id: bookId }).findOne((err, bookData) => {
-                if (err) { reject(err); }
-                previousSearches.push({
-                  book_id: bookId,
-                  book_name: bookData.book_name,
-                  author_name: bookData.author_name
-                });
-                if (index === searches[1].length - 1) { resolve(previousSearches); }
->>>>>>> (feat) added routes to get song lyrics
-              });
+            });
               if (index === searches.length - 1) {
                 resolve(previousSearches);
               }
@@ -476,18 +451,10 @@ app.get('/pastSearches', (req, res) => {
             });
           }
         });
-<<<<<<< HEAD
       } else {
         throw err;
       }
 
-=======
-      });
-
-
-
-    })
->>>>>>> (feat) added routes to get song lyrics
   })
   .then((previous) => {
     res.send(previous);
@@ -520,55 +487,3 @@ app.post('/loadPastSearchResults', (req, res) => {
 })
 module.exports = app;
 
-
-
-
-
-  //   if (searches[0].length === 0 && searches[1].length === 0) { res.send({errorMessage: 'No Past Searches'}); }
-  //   return new Promise ((resolve, reject) => {
-  //     previousSearches = []
-  //     if (searches[0].length > 0) {
-  //       searches[0].forEach((songId, index) => {
-  //         db.Song.where({ track_id: songId }).findOne((err, songData) => {
-  //           if (err) { reject(err); }
-  //           previousSearches.push({
-  //             track_id: songId,
-  //             track_name: songData.track_name,
-  //             artist_name: songData.artist_name
-  //           });
-  //           if (index === searches[0].length - 1) {
-
-  //             //trying to foreach the songs then books THEN resolve the results of searching whatever blah blah
-  //             searches[1].forEach((bookId, index) => {
-  //               db.Book.where({ book_id: bookId }).findOne((err, bookData) => {
-  //                 console.log(bookData);
-  //                 if (err) { reject(err); }
-  //                 previousSearches.push({
-  //                   book_id: bookId,
-  //                   book_name: bookData.book_name,
-  //                   author_name: bookData.author_name
-  //                 });
-  //                 if (index === searches[1].length - 1) { resolve(previousSearches); }
-  //               });
-  //             });
-  //           }
-  //         });
-  //       });
-  //     } else {
-  //       searches[1].forEach((bookId, index) => {
-  //         db.Book.where({ book_id: bookId }).findOne((err, bookData) => {
-  //           console.log(bookData);
-  //           if (err) { reject(err); }
-  //           previousSearches.push({
-  //             book_id: bookId,
-  //             book_name: bookData.book_name,
-  //             author_name: bookData.author_name
-  //           });
-  //           if (index === searches[1].length - 1) { resolve(previousSearches); }
-  //         });
-  //       });
-
-  //     }
-
-  //   })
-  // })
