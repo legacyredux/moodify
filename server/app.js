@@ -1,7 +1,7 @@
 // dependencies
 const express = require('express');
 const cookieParser = require('cookie-parser');
-// const session = require('express-session');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 
@@ -66,7 +66,7 @@ app.use(passport.session());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
-// app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
+app.use(session({secret: "ssshhh", resave: false, saveUninitialized: true}));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
