@@ -34,9 +34,7 @@ passport.deserializeUser(function(id, done) {
 });
 
 const app = express();
-
 let accessTime;
-
 
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
@@ -51,9 +49,8 @@ passport.use(new SpotifyStrategy({
       username: profile.username,
       password: profile.id,
     }, (err, result) => {
-      if (!err) {   
+      if (!err) {
         console.log('yay!: ', result);
-
       } else {
         console.log('no :( : ', err);
       }
@@ -94,10 +91,9 @@ app.get('/auth/spotify/callback',
   });
 
 app.get('/recentlyplayed', (req, res) => {
-  
   let url = `https://api.spotify.com/v1/me/player/recently-played`
   
-  axios(url, { 'headers': { 'Authorization': `Bearer ${accesTime}` } })
+  axios(url, { 'headers': { 'Authorization': `Bearer ${accessTime}` } })
   .then((res) => {  
 
     let playListEntry = res.data.items;
@@ -222,7 +218,6 @@ app.post('/fetchLyricsByTrackId', (req, res) => {
 });
 
 app.post('/processBook', (req, res) => {
-  console.log(req.body);
   let input = req.body;
 
   const bookTitleAndAuthor = [input.author_name, input.book_name];
@@ -230,36 +225,39 @@ app.post('/processBook', (req, res) => {
 
   return watsonHelpers.queryWatsonToneHelper(input.description)
   .then(data => {
-    console.log('received response from watson');
-    console.log(data.fear);
-    watsonData.book_id = input.id,
-    watsonData.anger = data.anger,
-    watsonData.disgust = data.disgust,
-    watsonData.fear = data.fear,
-    watsonData.joy = data.joy,
-    watsonData.sadness = data.sadness,
-    watsonData.analytical = data.analytical,
-    watsonData.confident = data.confident,
-    watsonData.tentative = data.tentative,
-    watsonData.openness = data.openness,
-    watsonData.conscientiousness = data.conscientiousness,
-    watsonData.extraversion = data.extraversion,
-    watsonData.agreeableness = data.agreeableness,
+    watsonData.book_id = input.book_id;
+    watsonData.anger = data.anger;
+    watsonData.disgust = data.disgust;
+    watsonData.fear = data.fear;
+    watsonData.joy = data.joy;
+    watsonData.sadness = data.sadness;
+    watsonData.analytical = data.analytical;
+    watsonData.confident = data.confident;
+    watsonData.tentative = data.tentative;
+    watsonData.openness = data.openness;
+    watsonData.conscientiousness = data.conscientiousness;
+    watsonData.extraversion = data.extraversion;
+    watsonData.agreeableness = data.agreeableness;
     watsonData.emotionalrange = data.emotionalrange
 
+    //this can be readded at some point
     // const newEntry = new db.Watson(watsonData);
     //   newEntry.save(err => {
     //   if (err) { console.log('SAVE WATSON ERROR'); }
     // }) 
   })
   .then(() => {
-    console.log('saved watson info to db');
+    let bookEntry = new db.Book(input);
+    bookEntry.save(err => {
+      if (err) { console.log("SAVE BOOK ERROR: ", err); }
+    })
+  })
+  .then(() => {
     if (req.session.passport) {
       return db.User.where({username: req.session.passport.user.username}).update({ $push: {books: input.book_id}});
     }
   })
   .then(() => {
-    console.log('sending response to client');
     res.json([bookTitleAndAuthor, input.description, watsonData, input.img]);
   })
   .catch((err) => {
@@ -284,7 +282,7 @@ app.post('/process', (req, res) => {
   })
   .then(() => {
     //NEEDS TO BE DATA FROM LYRIC API CALL
-    //input.lyrics = 'I hate!\nI hate!\nI hate!\nI hate!\n'
+    // input.lyrics = 'I hate!\nI hate!\nI hate!\nI hate!\n'
     return watsonHelpers.queryWatsonToneHelper(input.lyrics)
   })
   .then(data => {
@@ -334,61 +332,69 @@ app.post('/process', (req, res) => {
   });
 })
 
+
 app.get('/pastSearches', (req, res) => {
   /***************************************************************************************/
   /***************************************************************************************/
   const username = req.session.user || req.session.passport.user.username;
-  return new Promise ((resolve, reject) => {
+  return new Promise ( (resolve, reject) => {
     db.User.where({ username: username }).findOne((err, user) => {
-      if (err) { reject(err); }
+      if (err) { reject(err); }//
       let songs = user !== null ? user.songs : [];
       let books = user !== null ? user.books : [];
       resolve(songs.concat(books));
-    })
-  })
-  .then(searches => {
+    })//
+  })//
+  
+
+  .then( (searches) => {
     let previousSearches = [];
-    return new Promise ((resolve, reject) => {
-      if (searches.length > 0) {
-        searches.forEach((ID, index) => {
-          if (typeof ID === 'number') {
-            db.Song.where({ track_id: ID }).findOne((err, songData) => {
-              if (err) { reject(err); }
-              previousSearches.push({
-                track_id: ID,
-                track_name: songData.track_name,
-                artist_name: songData.artist_name
-              });
-              if (index === searches.length - 1) { 
-                resolve(previousSearches);
-              }
-            });
-          } else {
-            db.Book.where({ book_id: ID }).findOne((err, bookData) => {
-              if (err) { reject(err); }
-              previousSearches.push({
-                book_id: ID,
-                book_name: bookData.book_name,
-                author_name: bookData.author_name
-              });
-              if (index === searches.length - 1) { 
-                resolve(previousSearches);
-              }
-            });
-          }
-        });
-      } else {
-        throw err;
-      }
-      
-  })
-  .then((previous) => {
-    res.send(previous);
-  })
-  .catch(err => {
-    res.send({errorMessage: 'No Past Searches'});
-  })
-});
+    
+
+            return new Promise ((resolve, reject) => {
+              if (searches.length > 0) {//
+                searches.forEach((ID, index) => {//
+                  if (typeof ID === 'number') {//
+                    db.Song.where({ track_id: ID }).findOne( (err, songData) => {//
+                      if (err) { reject(err); }//
+                      previousSearches.push({//
+                        track_id: ID,
+                        track_name: songData.track_name,
+                        artist_name: songData.artist_name
+                      });//
+                      if (index === searches.length - 1) { //
+                        resolve(previousSearches);
+                      }//
+                    });//
+                  } else {//
+                    db.Book.where({ book_id: ID }).findOne( (err, bookData) => {//
+                      if (err) { reject(err); }//
+                      previousSearches.push({//
+                        book_id: ID,
+                        book_name: bookData.book_name,
+                        author_name: bookData.author_name
+                      });//
+                      if (index === searches.length - 1) {//
+                        resolve(previousSearches);
+                      }//
+                    });//
+                  }//
+                });//
+              } else {//
+                throw err;
+              }//
+          })//
+
+          .then( (previous) => {//
+            res.send(previous);
+          })//
+          .catch( (err) => {//
+            res.send({errorMessage: 'No Past Searches'});
+          })//
+
+})
+
+})
 
 app.post('/loadPastSearchResults', (req, res) => {
   return new Promise((resolve, reject) => {

@@ -119,7 +119,7 @@ class App extends React.Component {
 
       axios.post('/processBook', input).then(res => {
         let data = res.data;
-        console.log(res);
+        console.log(res.data);
         this.setState({
           currentSongNameAndArtist: data[0],
           currentLyrics: data[1],
@@ -147,6 +147,7 @@ class App extends React.Component {
 
       axios.post('/process', input).then(res => {
         let data = res.data;
+        console.log(data);
         this.setState({
           currentSongNameAndArtist: data[0],
           currentLyrics: data[1],
