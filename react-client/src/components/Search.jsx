@@ -20,8 +20,12 @@ class Search extends React.Component {
   handleArtistChange(e) { this.setState({ artist: e.target.value }); }
   handleRadioSelect(e) { this.setState({ selection: e.target.value}); }
 
+
+  //this needs to remove current results/whatever is being rendered
+  //also set loading to true
+  //check out app's state during conflicts and this should decide 
+  //what needs to be remove etc.
   handleSubmit(e) {
-    console.log(this.state.selection);
     e.preventDefault();
     if (this.state.selection !== null) {
       this.props.search(this.state.title, this.state.artist, this.state.selection);

@@ -18,7 +18,6 @@ import sampleSpotify from '../../../spotify_new_release_sample_data.js';
 
 class App extends React.Component {
   constructor(props) {
-    //console.log(sampleSpotify.albums.items)
     super(props);
     this.state = {
       currentSongNameAndArtist: [],
@@ -46,7 +45,9 @@ class App extends React.Component {
       landingPageComponents: false,
       spotifyHomePage: [],
       showSpotifyPlayer: false,
-      spotifyPlayerUri: ''
+      spotifyPlayerUri: '',
+      showImage: false,
+      showSpotifyPlayer: false
     };
     this.search = this.search.bind(this);
     this.process = this.process.bind(this);
@@ -128,7 +129,10 @@ class App extends React.Component {
           spotifyLoading: false,
           lyricsLoading: false,
           showLyrics: true,
-          showMood: true
+          showMood: true,
+          showPlayer: true,
+          showImage: true,
+          showSpotifyPlayer: false
         });
       })
       .catch( (err) => {
@@ -147,7 +151,6 @@ class App extends React.Component {
 
       axios.post('/process', input).then(res => {
         let data = res.data;
-        console.log(data);
         this.setState({
           currentSongNameAndArtist: data[0],
           currentLyrics: data[1],
@@ -157,9 +160,10 @@ class App extends React.Component {
           showPlayer: true,
           lyricsLoading: false,
           showLyrics: true,
-          showMood: true
+          showMood: true,
+          showImage: false,
+          showSpotifyPlayer: true
         });
-        console.log('I am happening is APP.JSX', this.state.showPlayer)
       }).catch(error => {
         throw error;
       });
@@ -227,7 +231,6 @@ class App extends React.Component {
   }
 
   recentlyPlayedSongs(songArtist) {
-    console.log("I am getting to recentlyplayed", songArtist)
 
     this.setState({searchResultsLoading: true, showPrev: true, upDown: false});
 
@@ -253,7 +256,6 @@ class App extends React.Component {
   }
 
   loginSpotify() {
-    console.log('I am working loginSpotify in App,Jsx !!!!!!!!!!')
     axios.get('/recentlyplayed')
       .then((res) => {
         this.setState({
@@ -345,10 +347,12 @@ class App extends React.Component {
             {this.state.showPlayer ?
               <Lyrics showPlayer={this.state.showPlayer}
                       thumbnail={this.state.thumbnail}
+                      showImage={this.state.showImage}
                       spotifyURI={this.state.spotifyURI}
                       loading={this.state.spotifyLoading}
                       lyrics={this.state.currentLyrics}
                       loading={this.state.lyricsLoading}
+                      showSpotifyPlayer={this.state.showSpotifyPlayer}
                       songNameAndArtist={this.state.currentSongNameAndArtist}/>
               : null}
           </div>
