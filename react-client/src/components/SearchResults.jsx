@@ -10,19 +10,13 @@ class SearchResults extends React.Component {
   }
 
   handleClick(e) {
-
     let index = e.target.getAttribute('value');//this ternary should send song and/or book to process method.check with internet
     let toWatson = this.props.results.track_list ? this.props.results.track_list[index].track
                                                  : this.props.results[index];
-    console.log('index: ', index);
-    console.log('watson: ', toWatson);
-
     this.props.process(toWatson);
-
   }
 
   handlePlaylist (e) {
-  console.log('I am in SearchResults and working????????????????????????')
    let songArtist = e.target.getAttribute('value');
    let sendIt = songArtist.split(',');
    this.props.recentlyPlayedSongs(sendIt);

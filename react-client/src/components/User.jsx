@@ -34,14 +34,16 @@ class User extends React.Component {
     });
   }
 
-//this function isn't being used, it can be removed
+//this function isn't being used, it can be removed. or not.
   recentlyplayed() {
     axios.get('/recentlyplayed')
       .then((res) => {
-        console.log(res);
+        console.log('Hello user, how do you like our app?');
+        console.log('Maybe you opened dev tools accidentaly');
+        console.log('have a great day!');
       })
       .catch( (err) => {
-        console.log(err);
+        console.log('Something went wrong, but we dont even know why');
       })
   }
 

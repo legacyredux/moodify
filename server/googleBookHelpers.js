@@ -13,12 +13,10 @@ const getBookDescriptionByTitleAndAuthor = (title, author) => {
 	authorURL = '+inauthor:' + author;
 	  }
   let completeURL = rootURL + titleURL + authorURL + '&maxResults=5';
-  console.log(completeURL);
   	return request.getAsync(completeURL)
  
   .then(data => {
     let parsedData = JSON.parse(data.body);
-    console.log(parsedData);
     return parsedData;
   })
   .catch(err => { console.log(err); });

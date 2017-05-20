@@ -8,7 +8,6 @@ class Lyrics extends React.Component {
       title: ' ',
       artist: ' '
     };
-    console.log('this is the props', props)
   }
 
   render() {
