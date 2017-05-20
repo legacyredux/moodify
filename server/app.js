@@ -85,7 +85,7 @@ app.get('/auth/spotify',
 app.get('/auth/spotify/callback',
   passport.authenticate('spotify', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect('/');
+    res.redirect('https://lahumeur.herokuapp.com/');
   });
 
 app.get('/recentlyplayed', (req, res) => {
