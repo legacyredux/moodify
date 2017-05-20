@@ -69,6 +69,7 @@ let watsonSchema = mongoose.Schema({
 });
 watsonSchema.plugin(beautifyUnique);
 const Watson = mongoose.model('Watson', watsonSchema);
+const WatsonTopTen = mongoose.model('WatsonTopTen', watsonSchema);
 
 
 ///////////USER SCHEMA///////////////
@@ -97,3 +98,4 @@ module.exports.Song = Song;
 module.exports.Book = Book;
 module.exports.Watson = Watson;
 module.exports.User = User;
+module.exports.WatsonTopTen = WatsonTopTen;
