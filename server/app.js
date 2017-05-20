@@ -1,12 +1,12 @@
 // dependencies
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const session = require('cookie-session');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const url = require('url');
 const RedisStore = require('connect-redis')(session);
-
+const cookieSesh = require('cookie-session');
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const SpotifyWebApi = require('spotify-web-api-node');
@@ -31,12 +31,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.set('trust proxy', 1);
 
 //////////////////////////////////////////////////////////////////
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 
 
@@ -48,16 +48,11 @@ let options = {host: clientStuff.hostname,
                db: redisAuth[0],
                pass: redisAuth[1]};
 
-// app.use(session({secret: "ssshhh",
-//                  proxy: true,
-//                  saveUninitialized: true,
-//                  resave: true,
-//                  store: new RedisStore(options)/*client redis module?*/
-// }));
-app.use(session({
-  secret: 'ssshhh',
-  signed: true,
-  store: new RedisStore(options)
+app.use(session({secret: "ssshhh",
+                 proxy: true,
+                 saveUninitialized: true,
+                 resave: true,
+                 store: new RedisStore(options)/*client redis module?*/
 }));
 
 passport.serializeUser(function(user, done) {
