@@ -25,15 +25,7 @@ const config = require('../config/index.js');
 const googleBookHelpers = require('./googleBookHelpers.js')
 let accessTime;
 
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
 
 const app = express();
 
@@ -62,6 +54,15 @@ app.use(session({secret: "ssshhh",
                  store: new RedisStore(options)/*client redis module?*/
 }));
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
