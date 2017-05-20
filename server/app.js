@@ -71,6 +71,7 @@ app.use(cookieParser());
 
 
 let clientStuff = url.parse(process.env.REDISTOGO_URL);
+let redisAuth = clientStuff.auth.split(':');
 
 let options = {host: clientStuff.hostname,
                port: clientStuff.port,
