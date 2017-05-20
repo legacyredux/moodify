@@ -22,6 +22,9 @@ const db = require('../database');
 const config = require('../config/index.js');
 const googleBookHelpers = require('./googleBookHelpers.js')
 
+const app = express();
+app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -33,7 +36,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-const app = express();
+// const app = express();
 let accessTime;
 
 passport.use(new SpotifyStrategy({
@@ -60,8 +63,8 @@ passport.use(new SpotifyStrategy({
   }
   ));
 //////////////////////////////////////////////////////////////////
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(cors());
 app.use(bodyParser.json());
