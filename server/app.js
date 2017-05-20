@@ -81,7 +81,7 @@ let options = {host: clientStuff.hostname,
 app.use(session({secret: "ssshhh", 
                  resave: false, 
                  saveUninitialized: true,
-                 store: new RedisStore(options),/*client redis module?*/
+                 store: new RedisStore(options)/*client redis module?*/
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
