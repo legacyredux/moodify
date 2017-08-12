@@ -2,67 +2,64 @@ const db = require('../database');
 const Promise = require('bluebird');
 const hash = require('./hash.js');
 
-const userExists = (username, password) => {
-  return new Promise((resolve, reject) => {
-    let hashedPassword = hash.createHash(password);
+const userExists = (username, password) =>
+  new Promise((resolve, reject) => {
+    const hashedPassword = hash.createHash(password);
     db.User
     .find({
-      username: username,
-      password: hashedPassword
+      username,
+      password: hashedPassword,
     })
     .exec((err, user) => {
       if (!err && user.length !== 0) {
         resolve(true);
-      } else { resolve(false); }
+      } else { resolve(false); reject(false); } // what?
     });
   });
-};
 
 const verifyUser = (req, res, next) => {
-  let username = req.body.username;
-  let password = req.body.password;
+  const username = req.body.username;
+  const password = req.body.password;
   return userExists(username, password)
   .then((item) => {
     if (!item) {
-      res.send({errorMessage: 'user not found'});
+      res.send({ errorMessage: 'user not found' });
     } else {
       next();
     }
   });
 };
 
-const usernameExists = (username) => {
-  return new Promise((resolve, reject) => {
+const usernameExists = username =>
+  new Promise((resolve, reject) => {
     db.User
     .find({
-      username: username,
+      username,
     })
     .exec((err, user) => {
       if (!err && user.length !== 0) {
         resolve(true);
-      } else { resolve(false); }
+      } else { resolve(false); reject(false); }
     });
   });
-};
 
-const createUser = (req, res, next) => {
-  return usernameExists(req.body.username)
+const createUser = (req, res, next) =>
+  usernameExists(req.body.username)
   .then((item) => {
     if (!item) {
-      let username = req.body.username;
-      let hashedPassword = hash.createHash(req.body.password);
-      let newUser = new db.User({
-        username: username,
-        password: hashedPassword
+      const username = req.body.username;
+      const hashedPassword = hash.createHash(req.body.password);
+      const newUser = new db.User({
+        username,
+        password: hashedPassword,
       });
       newUser.save(() => {
         next();
       });
     } else {
-      res.send({errorMessage: 'username already exists'});
+      res.send({ errorMessage: 'username already exists' });
     }
   });
-};
 
 module.exports.verifyUser = verifyUser;
 module.exports.createUser = createUser;

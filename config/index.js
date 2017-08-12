@@ -1,5 +1,4 @@
 const env = process.env.NODE_ENV || 'development';
-
 let config;
 
 if (env === 'development') {
@@ -11,4 +10,3 @@ if (env === 'production') {
 }
 
 module.exports = config;
-

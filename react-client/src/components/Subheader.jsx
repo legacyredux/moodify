@@ -6,10 +6,9 @@ class Subheader extends React.Component {
     this.state = {};
   }
 
-  render () {
+  render() {
     return (
-      <div id="subheader">
-      </div>
+      <div id="subheader" />
     );
   }
 }
