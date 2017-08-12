@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 const beautifyUnique = require('mongoose-beautiful-unique-validation');
-mongoose.Promise = require('bluebird');
-mongoose.createConnection('mongodb://localhost/test');
 const config = require('../config/index.js');
+
 const DATABASE_URL = config.DATABASE_URL;
+
+mongoose.Promise = require('bluebird');
+
+mongoose.createConnection(DATABASE_URL); // 'mongodb://localhost/test'
 const findOrCreate = require('mongoose-find-or-create');
 
 mongoose.connect(DATABASE_URL);
@@ -17,23 +20,23 @@ db.once('open', () => {
   console.log('mongoose connection success! b(^.~)z');
 });
 
-///////////SONG SCHEMA///////////////
-let songSchema = mongoose.Schema({
-	track_id: {type: Number, unique: true},
-	track_name: String,
-	artist_name: String,
-	album_coverart_100x100: String,
-	album_coverart_350x350: String,
-	album_coverart_500x500: String,
-	album_coverart_800x800: String,
-	lyrics: String,
-  spotify_uri: String
+// /////////SONG SCHEMA///////////// //
+const songSchema = mongoose.Schema({
+  track_id: { type: Number, unique: true },
+  track_name: String,
+  artist_name: String,
+  album_coverart_100x100: String,
+  album_coverart_350x350: String,
+  album_coverart_500x500: String,
+  album_coverart_800x800: String,
+  lyrics: String,
+  spotify_uri: String,
 });
 songSchema.plugin(beautifyUnique);
 const Song = mongoose.model('Song', songSchema);
 
-let bookSchema = mongoose.Schema({
-  book_id: {type: String, unique: true},
+const bookSchema = mongoose.Schema({
+  book_id: { type: String, unique: true },
   book_name: String,
   author_name: String,
   img: String,
@@ -42,12 +45,12 @@ let bookSchema = mongoose.Schema({
 bookSchema.plugin(beautifyUnique);
 const Book = mongoose.model('Book', bookSchema);
 
-///////////WATSON SCHEMA///////////////
-let watsonSchema = mongoose.Schema({
+// /////////WATSON SCHEMA///////////// //
+const watsonSchema = mongoose.Schema({
 
   track_id: { type: Number, unique: true },
 
-	// Emotion Tone
+  // Emotion Tone
   anger: Number,
   disgust: Number,
   fear: Number,
@@ -64,32 +67,32 @@ let watsonSchema = mongoose.Schema({
   conscientiousness: Number,
   extraversion: Number,
   agreeableness: Number,
-  emotionalrange: Number
+  emotionalrange: Number,
 
 });
 watsonSchema.plugin(beautifyUnique);
 const Watson = mongoose.model('Watson', watsonSchema);
 
 
-///////////USER SCHEMA///////////////
-let userSchema = mongoose.Schema({
-  username: {type: String, unique: true},
+// /////////USER SCHEMA///////////// //
+const userSchema = mongoose.Schema({
+  username: { type: String, unique: true },
   password: String,
   songs: [Number],
-  books: [String]
+  books: [String],
 });
 userSchema.plugin(beautifyUnique);
 userSchema.plugin(findOrCreate);
 const User = mongoose.model('User', userSchema);
 
 
-///////////TOP TEN SONGS SCHEMA///////////////
-let topTenSongsSchema = mongoose.Schema({
+// /////////TOP TEN SONGS SCHEMA///////////// //
+const topTenSongsSchema = mongoose.Schema({
   songs: Array,
-  dateadded: Date
+  dateadded: Date,
 });
 topTenSongsSchema.plugin(beautifyUnique);
-const TopTenSongs = mongoose.model('TopTenSongs', topTenSongsSchema)
+const TopTenSongs = mongoose.model('TopTenSongs', topTenSongsSchema);
 
 
 module.exports.TopTenSongs = TopTenSongs;

@@ -1,5 +1,5 @@
-const spotifyHelpers = require('../server/spotifyHelpers.js');
 const expect = require('chai').expect;
+const spotifyHelpers = require('../server/spotifyHelpers.js');
 
 describe('getSongByTitleAndArtist', function() {
   it('function should exist', function() {
@@ -12,11 +12,11 @@ describe('getSongByTitleAndArtist', function() {
 
   it('should take 2 string inputs, title and artist', function() {
     return spotifyHelpers.getSongByTitleAndArtist(testTitle, testArtist)
-    .then(data => {
+    .then((data) => {
       queryData = data;
       return data;
     })
-    .catch(err => {
+    .catch((err) => {
       queryData = err;
       return err;
     });
@@ -26,5 +26,4 @@ describe('getSongByTitleAndArtist', function() {
     expect(queryData).is.a('string');
     expect(queryData).to.equal('spotify:track:0oXnmfo2kW3joSeiXoazdV');
   });
-
 });

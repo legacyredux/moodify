@@ -1,8 +1,7 @@
+import { Switch, Route } from 'react-router-dom';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import LoginSignup from './LoginSignup.jsx';
 import App from './App.jsx';
-import { Switch, Route, Link } from 'react-router-dom';
 
 class Router extends React.Component {
   constructor(props) {
@@ -11,14 +10,14 @@ class Router extends React.Component {
     };
   }
 
-  render () {
+  render() {
     return (
       <div>
-       <Switch>
-          <Route exact path='/' >
+        <Switch>
+          <Route exact path="/" >
             <App />
           </Route>
-          <Route path='/loginSignup'>
+          <Route path="/loginSignup">
             <LoginSignup />
           </Route>
         </Switch>

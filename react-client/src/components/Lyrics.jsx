@@ -6,7 +6,7 @@ class Lyrics extends React.Component {
     super(props);
     this.state = {
       title: ' ',
-      artist: ' '
+      artist: ' ',
     };
   }
 
@@ -17,19 +17,18 @@ class Lyrics extends React.Component {
           <img alt="loading" src="./img/triangle.svg"/>
         </div>
       );
-    } else {
-      return (
-        <div className="lyrics" >
-          {this.props.showImage ? <img className="thumbnail" src={this.props.thumbnail}></img>
-                                : null}
-          <h6>{this.props.songNameAndArtist[0] + ' - ' + this.props.songNameAndArtist[1]}</h6>
-          {this.props.showSpotifyPlayer ?
-            <Player spotifyURI={this.props.spotifyURI} loading={this.props.loading}/>
-          : null }
-          <pre>{this.props.lyrics}</pre>
-        </div>
-      );
     }
+    return (
+      <div className="lyrics" >
+        {this.props.showImage ? <img alt="thumbnail" className="thumbnail" src={this.props.thumbnail}></img>
+                              : null}
+        <h6>{`${this.props.songNameAndArtist[0]} + ' - ' + this.props.songNameAndArtist[1]}`}</h6>
+        {this.props.showSpotifyPlayer ?
+          <Player spotifyURI={this.props.spotifyURI} loading={this.props.loading} />
+        : null }
+        <pre>{this.props.lyrics}</pre>
+      </div>
+    );
   }
 }
 

@@ -1,9 +1,9 @@
-const musixMatchHelpers = require('../server/musixMatchHelpers.js');
 const expect = require('chai').expect;
+const musixMatchHelpers = require('../server/musixMatchHelpers.js');
 
-describe('getLyricsByTrackId', function() {
+describe('getLyricsByTrackId', () => {
 
-  it('function should exist', function() {
+  it('function should exist', () => {
     expect(musixMatchHelpers.getLyricsByTrackId).to.be.a('function');
   });
 
@@ -59,7 +59,7 @@ describe('searchByTitleAndArtist', function() {
   it('function should exist', function() {
     expect(musixMatchHelpers.searchByTitleAndArtist).to.be.a('function');
   });
-  
+
   const testTitle = 'i cant get no satisfaction';
   const testArtist = 'the rolling stones';
 

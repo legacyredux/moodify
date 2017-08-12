@@ -10,7 +10,7 @@ class PlayListEntry extends React.Component {
   render() {
     return (
       <div>
-      <h4>PlayListEntry Component</h4>
+        <h4>PlayListEntry Component</h4>
       </div>
     );
   }

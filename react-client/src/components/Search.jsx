@@ -7,7 +7,7 @@ class Search extends React.Component {
       title: '',
       artist: '',
       selection: null,
-      showPrev: false
+      showPrev: false,
     };
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleArtistChange = this.handleArtistChange.bind(this);
@@ -18,18 +18,18 @@ class Search extends React.Component {
 
   handleTitleChange(e) { this.setState({ title: e.target.value }); }
   handleArtistChange(e) { this.setState({ artist: e.target.value }); }
-  handleRadioSelect(e) { this.setState({ selection: e.target.value}); }
+  handleRadioSelect(e) { this.setState({ selection: e.target.value }); }
 
 
-  //this needs to remove current results/whatever is being rendered
-  //also set loading to true
-  //check out app's state during conflicts and this should decide 
-  //what needs to be remove etc.
+  //  this needs to remove current results/whatever is being rendered
+  // also set loading to true
+  // check out app's state during conflicts and this should decide
+  // what needs to be remove etc.
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.selection !== null) {
       this.props.search(this.state.title, this.state.artist, this.state.selection);
-      this.setState({ title: '', artist: '', showPrev: true});
+      this.setState({ title: '', artist: '', showPrev: true });
     } else {
       alert('Please select a media to search!');
     }
@@ -46,29 +46,60 @@ class Search extends React.Component {
       <div>
         <div className="search">
           <form onSubmit={this.handleSubmit}>
-            <input type="text"
-                   name="song title"
-                   value={this.state.title}
-                   placeholder="title"
-                   onChange={this.handleTitleChange}
-                   className="textbox"/>
-            <input type="text" name="Artist"
-                   value={this.state.artist}
-                   placeholder="artist"
-                   onChange={this.handleArtistChange}
-                   className="textbox"/>
-            <input onChange={this.handleRadioSelect} type="radio" name="media" value="/search"/> Song  
-            <input onChange={this.handleRadioSelect} type="radio" name="media" value="/books"/> Book
-            <button id="ilovecats" onClick={this.handleSubmit} className="submitbutton">Search</button>
+            <input
+              type="text"
+              name="song title"
+              value={this.state.title}
+              placeholder="title"
+              onChange={this.handleTitleChange}
+              className="textbox"
+            />
+            <input
+              type="text"
+              name="Artist"
+              value={this.state.artist}
+              placeholder="artist"
+              onChange={this.handleArtistChange}
+              className="textbox"
+            />
+            <input
+              onChange={this.handleRadioSelect}
+              type="radio"
+              name="media"
+              value="/search"
+            /> Song
+            <input
+              onChange={this.handleRadioSelect}
+              type="radio"
+              name="media"
+              value="/books"
+            /> Book
+            <button
+              id="ilovecats"
+              onClick={this.handleSubmit}
+              className="submitbutton"
+            >Search</button>
           </form>
 
           <form>
             {this.props.showPrev ?
               <div className="resultsBar" onClick={this.prevResults} >
               <div className="searchHeadline">Search Results</div>
-              {this.props.upDown ?
-              <img className="searchPrevUp" src="./img/ic_down.svg" width="18" height="18"/>
-              : <img className="searchPrevDown" src="./img/ic_up.svg" width="18" height="18"/>}
+                {this.props.upDown ?
+                  <img
+                    alt="searchPrevUp"
+                    className="searchPrevUp"
+                    src="./img/ic_down.svg"
+                    width="18"
+                    height="18"
+                  />
+                  : <img
+                    alt="searchprevdn"
+                    className="searchPrevDown"
+                    src="./img/ic_up.svg"
+                    width="18"
+                    height="18"
+                  />}
               </div>
               : null}
           </form>
