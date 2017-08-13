@@ -288,6 +288,7 @@ app.post('/process', (req, res) => {
 
 app.get('/pastSearches', (req, res) => {
   /* ************************************************************************************* */
+  console.log('received request for pas searches');
   const username = req.session.user || req.session.passport.user.username;
   return new Promise((resolve, reject) => {
     db.User.where({ username }).findOne((err, user) => {

@@ -22,7 +22,6 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    console.log(config.spotifyAuth);
     axios.get('/check').then((res) => {
       if (res.data.statusCode === 200) {
         this.setState({ loggedIn: true });
