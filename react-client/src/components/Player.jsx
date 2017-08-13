@@ -27,4 +27,14 @@ class Player extends React.Component {
   }
 }
 
+Player.propTypes = {
+  loading: React.PropTypes.bool,
+  spotifyURI: React.PropTypes.string,
+};
+
+Player.defaultProps = {
+  loading: true,
+  spotifyURI: '',
+};
+
 export default Player;

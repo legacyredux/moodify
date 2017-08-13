@@ -3,9 +3,7 @@ let config;
 
 if (env === 'development') {
   config = require('./config.dev.js');
-}
-
-if (env === 'production') {
+} else {
   config = require('./config.prod.js');
 }
 

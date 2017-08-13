@@ -97,7 +97,6 @@ class App extends React.Component {
   }
 
 
-
   process(trackObj) {
     if (trackObj.volumeInfo) {
       const input = {
@@ -158,29 +157,13 @@ class App extends React.Component {
     }
   }
 
-  showResults() {
-    this.setState({
-      showResults: !this.state.showResults,
-    });
-  }
+  showResults() { this.setState({ showResults: !this.state.showResults }); }
 
-  showResultsUser() {
-    this.setState({
-      showResultsUser: !this.state.showResultsUser,
-    });
-  }
+  showResultsUser() { this.setState({ showResultsUser: !this.state.showResultsUser }); }
 
-  upDown() {
-    this.setState({
-      upDown: !this.state.upDown,
-    });
-  }
+  upDown() { this.setState({ upDown: !this.state.upDown }); }
 
-  upDownUser() {
-    this.setState({
-      upDownUser: !this.state.upDownUser,
-    });
-  }
+  upDownUser() { this.setState({ upDownUser: !this.state.upDownUser }); }
 
   loadPastSearchResults(trackId) {
     axios.post('/loadPastSearchResults', { track_id: trackId }).then((res) => {
@@ -212,6 +195,7 @@ class App extends React.Component {
       });
     }
   }
+
   closePlayer() {
     this.setState({
       showSpotifyPlayer: false,
@@ -220,7 +204,6 @@ class App extends React.Component {
 
   recentlyPlayedSongs(songArtist) {
     this.setState({ searchResultsLoading: true, showPrev: true, upDown: false });
-
     const options = {
       title: songArtist[0],
       artist: songArtist[1],
@@ -230,42 +213,6 @@ class App extends React.Component {
       if (!res.data) {
         console.log('error');
       }
-
-      this.setState({ searchResultsLoading: false });
-      return res.data.track_list[0];
-    })
-    .then((data) => {
-      this.process(data.track);
-    });
-  }
-
-  loginSpotify() {
-    axios.get('/recentlyplayed')
-      .then((res) => {
-        this.setState({
-          searchResults: res.data,
-          showResults: true,
-          recentlyPlayed: true,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  recentlyPlayedSongs(songArtist) {
-    this.setState({ searchResultsLoading: true, showPrev: true, upDown: false });
-
-    const options = {
-      title: songArtist[0],
-      artist: songArtist[1],
-    };
-    axios.post('/search', options)
-    .then((res) => {
-      if (!res.data) {
-        console.log('error');
-      }
-
       this.setState({ searchResultsLoading: false });
       return res.data.track_list[0];
     })

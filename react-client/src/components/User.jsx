@@ -2,6 +2,7 @@ import { Redirect } from 'react-router-dom';
 import React from 'react';
 import renderif from 'render-if';
 import axios from 'axios';
+import config from '../../../config/index';
 import PastSearches from './PastSearches.jsx';
 import PastSearchResults from './PastSearchResults.jsx';
 
@@ -43,7 +44,7 @@ class User extends React.Component {
     axios.get('/pastSearches')
     .then(res =>
       this.setState({ pastSearchResults: res.data, loading: false }),
-    ).catch(err => console.log(err));
+    ).catch(err => console.error(err));
   }
 
   render() {
@@ -55,7 +56,7 @@ class User extends React.Component {
         <div className="user">
           {renderif(!this.state.loggedIn)(
             <div>
-              <a href="https://lahumeur.herokuapp.com/auth/spotify" className="loginButton">
+              <a href={config.SPOTIFY.spotifyAuth} className="loginButton">
               Connect With Spotify
               </a>
             </div>,
@@ -91,5 +92,11 @@ class User extends React.Component {
     );
   }
 }
+
+User.propTypes = {
+};
+
+User.defaultProps = {
+};
 
 export default User;

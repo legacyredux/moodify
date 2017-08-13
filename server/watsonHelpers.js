@@ -69,9 +69,7 @@ const queryWatsonNLUHelper = (songString) => {
     },
   };
   return nlu.analyzeAsync(parameters)
-  .then(data =>
-    data,
-  )
+  .then(data => data)
   .catch((err) => {
     console.log('queryWatsonNLUHelper error: ', err);
     return err;
