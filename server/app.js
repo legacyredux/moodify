@@ -22,33 +22,28 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
+  db.User.findById(id, (err, user) => {
     done(err, user);
   });
 });
 
 const app = express();
 let accessTime;
+
 passport.use(new SpotifyStrategy({
   clientID: config.SPOTIFY.clientId,
   clientSecret: config.SPOTIFY.secret,
   callbackURL: config.SPOTIFY.cbURL,
-},
-  (accessToken, refreshToken, profile, done) => {
-    accessTime = accessToken;
-    db.User.findOrCreate({
-      username: profile.username,
-      password: profile.id,
-    }, (err, result) => {
-      if (!err) {
-        console.log('yay!: ', result);
-      } else {
-        console.log('no :( : ', err);
-      }
-    });
-    done(null, profile);
-  },
-  ));
+}, (accessToken, refreshToken, profile, done) => {
+  accessTime = accessToken;
+  db.User.findOrCreate({
+    username: profile.username,
+    password: profile.id,
+  }, (err, result) =>
+    done(err, result));
+  // done(null, profile);
+}));
+
 // ////////////////////////////////////////////////////////////// //
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,7 +56,6 @@ app.use(express.static(`${__dirname}/../react-client/dist`));
 // routes
 let sess = {};
 
-
 app.get('/auth/spotify',
   passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-recently-played', 'user-top-read'], showDialog: true }),
   (req, res) => {
@@ -69,7 +63,8 @@ app.get('/auth/spotify',
   });
 
 app.get('/auth/spotify/callback',
-  passport.authenticate('spotify', { failureRedirect: 'https://lahumeur.herokuapp.com/login' }),
+  // passport.authenticate('spotify', { failureRedirect: 'https://lahumeur.herokuapp.com/login' }),
+  passport.authenticate('spotify', { failureRedirect: 'https://localhost:8080/login' }),
   (req, res) => {
     res.redirect(config.REDIRECT);
   });
@@ -96,9 +91,7 @@ app.get('/recentlyplayed', (req, res) => {
     });
     return songArray;
   })
-  .then(data =>
-    res.send(data),
-  )
+  .then(data => res.send(data))
   .catch((err) => {
     console.log('error retrieving playlists TRACKS from spotify ', err);
     res.send(err);
@@ -170,8 +163,7 @@ app.post('/books', (req, res) =>
     if (data.length === 0) { res.send({ errorMessage: 'No Search Results' }); }
     res.send(data);
   })
-  .catch((error) => { res.send(error); }),
-);
+  .catch((error) => { res.send(error); }));
 
 
 app.post('/search', (req, res) =>
@@ -180,8 +172,7 @@ app.post('/search', (req, res) =>
     if (data.track_list.length === 0) { res.send({ errorMessage: 'No Search Results' }); }
     res.send(data);
   })
-  .catch((error) => { res.send(error); }),
-);
+  .catch((error) => { res.send(error); }));
 
 app.post('/fetchLyricsByTrackId', (req, res) => {
   const trackId = req.body.trackId;
@@ -246,8 +237,7 @@ app.post('/process', (req, res) => {
     input.lyrics = lyrics.slice(0, (lyrics.indexOf('*******')));
   })
   .then(() =>
-    watsonHelpers.queryWatsonToneHelper(input.lyrics),
-  )
+    watsonHelpers.queryWatsonToneHelper(input.lyrics))
   .then((data) => {
     watsonData = {
       track_id: input.track_id,
@@ -277,8 +267,7 @@ app.post('/process', (req, res) => {
     throw new Error('some error');
   })
   .then(() =>
-    spotifyHelpers.getSongByTitleAndArtist(input.track_name, input.artist_name),
-  )
+    spotifyHelpers.getSongByTitleAndArtist(input.track_name, input.artist_name))
   .then((spotifyData) => {
     input.spotify_uri = spotifyData;
 
@@ -376,7 +365,6 @@ app.post('/loadPastSearchResults', (req, res) =>
       res.send(output);
     });
   })
-  .catch(err => res.send(err)),
-);
+  .catch(err => res.send(err)));
 
 module.exports = app;

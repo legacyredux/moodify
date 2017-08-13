@@ -18,5 +18,6 @@ module.exports = {
     clientId: process.env.SPOTIFY_CLIENT_ID,
     secret: process.env.SPOTIFY_SECRET,
     cbURL: process.env.SPOTIFY_CB_URL,
+    spotifyAuth: process.env.SPOTIFY_AUTH,
   },
 };

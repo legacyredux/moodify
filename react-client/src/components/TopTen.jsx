@@ -4,26 +4,40 @@ import TopRow from './TopRow.jsx';
 const TopTen = props => (
   <div className="new-releases">
     <h5>U.S. New Releases</h5>
-    {this.props.showSpotifyPlayer ?
+    {props.showSpotifyPlayer ?
       <div>
         <iframe
           title="spotify player"
           className="new-iframe"
-          src={`https://open.spotify.com/embed?uri=${this.props.spotifyPlayerUri}`}
+          src={`https://open.spotify.com/embed?uri=${props.spotifyPlayerUri}`}
           frameBorder="0"
           width="80%"
           height="auto"
-        /><button onClick={this.props.closePlayer}>Close Player</button> </div> : null}
+        /><button onClick={props.closePlayer}>Close Player</button> </div> : null}
     <ol>
-      { this.props.spotifyHomePage.map((item, idx) =>
+      { props.spotifyHomePage.map((item, idx) =>
         (<TopRow
-          showSpotifyPlayer={this.props.showSpotifyPlayer}
-          newReleaseClick={this.props.newReleaseClick}
+          showSpotifyPlayer={props.showSpotifyPlayer}
+          newReleaseClick={props.newReleaseClick}
           key={idx}
           rows={item}
         />))}
     </ol>
   </div>
 );
+
+TopTen.propTypes = {
+  closePlayer: React.PropTypes.func,
+  newReleaseClick: React.PropTypes.func,
+  spotifyHomePage: React.PropTypes.array, // eslint-disable-line react/forbid-prop-types
+  spotifyPlayerUri: React.PropTypes.string,
+};
+
+TopTen.defaultProps = {
+  closePlayer: () => {},
+  newReleaseClick: () => {},
+  spotifyHomePage: [],
+  spotifyPlayerUri: '', // needs to be a real default uri
+};
 
 export default TopTen;
